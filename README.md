@@ -6,13 +6,13 @@ Side effects [middleware](https://redux.js.org/advanced/middleware) for Redux.
 [![npm downloads](https://img.shields.io/npm/dm/redux-butterfly.svg?style=flat-square)](https://www.npmjs.com/package/redux-butterfly)
 
 ```js
-npm install redux-thunk
+npm install redux-butterfly
 ```
 
 or
 
 ```js
-yarn add redux-thunk
+yarn add redux-butterfly
 ```
 
 ## Attention
