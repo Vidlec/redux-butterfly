@@ -1,0 +1,34 @@
+{
+  "name": "redux-butterfly",
+  "version": "0.0.1",
+  "description": "Redux side effects middleware",
+  "main": "./dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx parcel ./src/index.js",
+    "build": "npx parcel build ./src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Vidlec/redux-butterfly.git"
+  },
+  "keywords": [
+    "Redux",
+    "side-effects",
+    "middleware"
+  ],
+  "author": "Pepa Vidlák",
+  "files": [
+    "dist",
+    "src"
+  ],
+  "license": "WTFPL",
+  "bugs": {
+    "url": "https://github.com/Vidlec/redux-butterfly/issues"
+  },
+  "homepage": "https://github.com/Vidlec/redux-butterfly#readme",
+  "devDependencies": {
+    "eslint": "^5.6.1",
+    "parcel-bundler": "^1.10.1"
+  }
+}
