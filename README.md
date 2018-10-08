@@ -67,7 +67,7 @@ You may notice two config keys.
 
 ## Enhancers
 
-Enhancers are a functions which are provided to the function returned by the action creator. There are two types: `statics` and `dynamics`
+Enhancers are functions which are provided to the function returned by the action creator. There are two types: `statics` and `dynamics`
 
 `statics` looks like this:
 
@@ -82,7 +82,7 @@ someValue => console.log(someValue)
 (store) => (value) => `${store.someValue}_${value}`
 ```
 
-As you can see dynamic enhancment gets a redux store as an input parameter, then its up to you what you want to do with it. For example you can have function which makes an API calls and always takes user token from the redux store. This function is then available in action creator.
+As you can see - dynamic enhancment gets a redux store as an input parameter, then its up to you what you want to do with it. For example you can have function which makes an API calls and always takes user token from the redux store. This function is then available in action creator.
 
 **Action creator**
 
@@ -91,7 +91,8 @@ const api = (store) => (url) => fetch(url, { headers: {
             "Authorization": store.session.token,
         },
        })
-```Tthen pass it to mw as a dynamic enhancer and use it in action creator
+```
+Then pass it to mw as a dynamic enhancer and use it in action creator
 
 ```js
 export const logIn = (username, password) => ({ api }) => ({
