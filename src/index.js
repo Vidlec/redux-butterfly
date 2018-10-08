@@ -17,7 +17,7 @@ export default function butterfly(config) {
 
     // Side actions
     if (action.sideActions)
-      Promise.resolve(action.andThen).then(actions => actions.forEach(dispatch))
+      Promise.resolve(action.sideActions).then(actions => actions.forEach(dispatch))
 
     // Compose enhancers
     const enhancers = {
