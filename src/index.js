@@ -15,6 +15,12 @@ export default function butterfly(config) {
     // Normal action pass it to next mw
     if (typeof action !== 'function') return next(action)
 
+    // Side actions
+    if (action.sideActions)
+      Promise.resolve(action.sideActions).then(actions =>
+        actions.forEach(dispatch)
+      )
+
     // Compose enhancers
     const enhancers = {
       ...statics,
