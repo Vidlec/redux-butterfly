@@ -15,10 +15,6 @@ export default function butterfly(config) {
     // Normal action pass it to next mw
     if (typeof action !== 'function') return next(action)
 
-    // Side actions
-    if (action.sideActions)
-      Promise.resolve(action.andThen).then(actions => actions.forEach(dispatch))
-
     // Compose enhancers
     const enhancers = {
       ...statics,
@@ -60,5 +56,13 @@ export default function butterfly(config) {
 
     // Dispatch proper action based on result of promise from payload
     return payload.then(handleResult(success)).catch(handleResult(error))
+  }
+}
+
+export const actionCreator = value => async () => {
+  const result = await fetch(value)
+  return {
+    type: 'BLAH',
+    payload: result,
   }
 }
