@@ -5,6 +5,18 @@ const ERROR = 'ERROR'
 const isPromise = value =>
   !!value && typeof value === 'object' && typeof value.then === 'function'
 
+const getPartialAction = (status, type, rest) => ({
+  type: `${type}_${status}`,
+  ...rest,
+})
+
+const resultHandler = (type, rest, dispatch) => status => value =>
+  dispatch({
+    ...getPartialAction(status, type, ...rest),
+    payload: { ...value },
+    ...rest,
+  })
+
 export default function butterfly(config) {
   const {
     enhancers: { statics = {}, dynamics = {} },
@@ -12,14 +24,8 @@ export default function butterfly(config) {
   } = config
 
   return ({ dispatch, getState }) => next => action => {
-    // Normal action pass it to next mw
+    // If its a normal action, pass it to next mw
     if (typeof action !== 'function') return next(action)
-
-    // Side actions
-    if (action.sideActions)
-      Promise.resolve(action.sideActions).then(actions =>
-        actions.forEach(dispatch)
-      )
 
     // Compose enhancers
     const enhancers = {
@@ -36,39 +42,24 @@ export default function butterfly(config) {
     // If action is a function, call the action with enhancments
     const actionResult = action({ ...enhancers, getState, dispatch })
 
-    const { type, payload, ...rest } = actionResult
+    const { type, payload, sideActions, ...rest } = actionResult
+
+    // Side actions
+    if (sideActions)
+      Promise.resolve(action.sideActions).then(actions =>
+        actions.forEach(dispatch)
+      )
 
     // Dispatched regular action, just pass to the next middleware
     if (!payload || !isPromise(payload)) {
       return next(actionResult)
     }
 
-    // This function returns partial action
-    const getPartialAction = status => ({
-      type: `${type}_${status}`,
-      ...rest,
-    })
-
     // Dispatch "start" action
-    next(getPartialAction(start))
-
-    // Given action type, returns a function  dipatches action with said action type
-    const handleResult = type => value =>
-      dispatch({
-        ...getPartialAction(type),
-        payload: { ...value },
-        ...rest,
-      })
+    next(getPartialAction(start, type, ...rest))
+    const handleResult = resultHandler(type, ...rest, dispatch)
 
     // Dispatch proper action based on result of promise from payload
     return payload.then(handleResult(success)).catch(handleResult(error))
-  }
-}
-
-export const actionCreator = value => async () => {
-  const result = await fetch(value)
-  return {
-    type: 'BLAH',
-    payload: result,
   }
 }
