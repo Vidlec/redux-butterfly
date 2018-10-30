@@ -10,17 +10,30 @@ const getPartialAction = (status, type, rest) => ({
   ...rest,
 })
 
-const resultHandler = (type, rest, dispatch) => status => value =>
-  dispatch({
-    ...getPartialAction(status, type, ...rest),
-    payload: { ...value },
-    ...rest,
-  })
+const resultHandler = (
+  type,
+  dispatch,
+  onSuccess,
+  onFailure,
+  andThen,
+  enums,
+  rest
+) => status => value => {
+  if (onSuccess && status === enums.success) onSuccess(value)
+  if (onFailure && status === enums.failure) onFailure(value)
+  if (andThen) andThen(value)
 
-export default function butterfly(config) {
+  dispatch({
+    ...getPartialAction(status, type, rest),
+    payload: value,
+  })
+}
+
+export default function butterfly(config = {}) {
   const {
-    enhancers: { statics = {}, dynamics = {} },
-    enums: { start = START, success = SUCCESS, error = ERROR },
+    enhancers: { statics = {}, dynamics = {} } = {},
+    enums: { start = START, success = SUCCESS, error = ERROR } = {},
+    enums,
   } = config
 
   return ({ dispatch, getState }) => next => action => {
@@ -42,7 +55,15 @@ export default function butterfly(config) {
     // If action is a function, call the action with enhancments
     const actionResult = action({ ...enhancers, getState, dispatch })
 
-    const { type, payload, sideActions, ...rest } = actionResult
+    const {
+      type,
+      payload,
+      sideActions,
+      onSuccess,
+      onFailure,
+      andThen,
+      ...rest
+    } = actionResult
 
     // Side actions
     if (sideActions)
@@ -56,8 +77,16 @@ export default function butterfly(config) {
     }
 
     // Dispatch "start" action
-    next(getPartialAction(start, type, ...rest))
-    const handleResult = resultHandler(type, ...rest, dispatch)
+    next(getPartialAction(start, type, rest))
+    const handleResult = resultHandler(
+      type,
+      dispatch,
+      onSuccess,
+      onFailure,
+      enums,
+      andThen,
+      rest
+    )
 
     // Dispatch proper action based on result of promise from payload
     return payload.then(handleResult(success)).catch(handleResult(error))

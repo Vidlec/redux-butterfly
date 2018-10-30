@@ -20,14 +20,14 @@ yarn add redux-butterfly
 **If you use Butterfly in CommonJS environment, don’t forget to add `.default` to your import**
 
 ```js
-var butterfly = require('redux-butterfly').default
+const butterfly = require('redux-butterfly').default
 ```
 
 ## What this does?
 
 This library acts similary to [`redux-thunk`](https://www.npmjs.com/package/redux-thunk)
 
-Its a [middleware](https://github.com/reactjs/redux/blob/master/docs/advanced/Middleware.md) which alows you to use action creators which return a function. This function recieves set of `enhancments`. Those enhancments are then available on action creator. More on that below. 
+Its a [middleware](https://github.com/reactjs/redux/blob/master/docs/advanced/Middleware.md) which alows you to use action creators which return a function. This function recieves set of `enhancments`. Those enhancments are then available on action creator. More on that below.
 Additionaly, if you return promise as a key named payload in your action. Butterfly will automaticaly dispatch start, success, and error actions for you.
 
 Why this silly name? [Because butterflies](https://en.wikipedia.org/wiki/Butterfly_effect)
@@ -87,19 +87,23 @@ As you can see - dynamic enhancment gets a redux store as an input parameter, th
 **Action creator**
 
 ```js
-const api = (store) => (url) => fetch(url, { headers: {
-            "Authorization": store.session.token,
-        },
-       })
+const api = store => url =>
+  fetch(url, {
+    headers: {
+      Authorization: store.session.token,
+    },
+  })
 ```
+
 Then pass it to mw as a dynamic enhancer and use it in action creator
 
 ```js
 export const logIn = (username, password) => ({ api }) => ({
   type: LOG_IN,
-  payload: api("http://example.com"),
+  payload: api('http://example.com'),
 })
 ```
+
 If you dont pass payload (or you do, but its not a promise), or your action creator doesnt return a function, butterfly simply passes the action into next middleware.
 
 And since you can pass promise to payload, you can use async action as a value of a payload and await complex api calls there, to avoid thunk promise chain hell.
