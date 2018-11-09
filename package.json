@@ -1,6 +1,6 @@
 {
   "name": "redux-butterfly",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Redux side effects middleware",
   "main": "./dist/index.js",
   "scripts": {

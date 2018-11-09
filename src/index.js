@@ -30,11 +30,9 @@ const resultHandler = (
 }
 
 export default function butterfly(config = {}) {
-  const {
-    enhancers: { statics = {}, dynamics = {} } = {},
-    enums: { start = START, success = SUCCESS, error = ERROR } = {},
-    enums,
-  } = config
+  const { enhancers = {}, enums = {} } = config
+  const { statics = {}, dynamics = {} } = enhancers
+  const { start = START, success = SUCCESS, error = ERROR } = enums
 
   return ({ dispatch, getState }) => next => action => {
     // If its a normal action, pass it to next mw
