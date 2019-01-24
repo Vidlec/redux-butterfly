@@ -1,8 +1,9 @@
 {
   "name": "redux-butterfly",
-  "version": "0.8.0",
+  "version": "0.8.1",
   "description": "Redux side effects middleware",
   "main": "./dist/index.js",
+  "types": "./index.d.ts",
   "scripts": {
     "test": "npx jest",
     "dev": "npx parcel ./src/index.ts",

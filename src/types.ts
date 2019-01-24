@@ -1,5 +1,3 @@
-import { Action } from 'redux'
-
 export interface StaticEnhancer {
   [key: string]: (...args: any) => any
 }
