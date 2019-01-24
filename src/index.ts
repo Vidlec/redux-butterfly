@@ -1,6 +1,12 @@
-const SUCCESS = 'SUCCESS'
-const START = 'START'
-const ERROR = 'ERROR'
+import { Config } from './types'
+import get from 'lodash-es/get'
+import { Dispatch, Middleware, MiddlewareAPI } from 'redux'
+
+enum Types {
+  START = 'START',
+  SUCCESS = 'SUCCESS',
+  ERROR = 'ERROR',
+}
 
 const isPromise = value =>
   !!value && typeof value === 'object' && typeof value.then === 'function'
@@ -22,19 +28,26 @@ const resultHandler = (
   if (onSuccess && status === enums.success) onSuccess(value)
   if (onFailure && status === enums.failure) onFailure(value)
   if (andThen) andThen(value)
-
   dispatch({
     ...getPartialAction(status, type, rest),
     payload: value,
   })
 }
 
-export default function butterfly(config = {}) {
-  const { enhancers = {}, enums = {} } = config
-  const { statics = {}, dynamics = {} } = enhancers
-  const { start = START, success = SUCCESS, error = ERROR } = enums
+export default function butterfly<S>(config: Config<S> = {}) {
+  const statics = get(config, ['enhancers', 'statics']) || {}
+  const dynamics = get(config, ['enhancers', 'dynamics']) || {}
 
-  return ({ dispatch, getState }) => next => action => {
+  const enums = get(config, ['enums']) || {}
+  const {
+    start = Types.START,
+    success = Types.SUCCESS,
+    error = Types.ERROR,
+  } = enums
+
+  const mw: Middleware = ({ dispatch, getState }: MiddlewareAPI) => (
+    next: Dispatch
+  ) => action => {
     // If its a normal action, pass it to next mw
     if (typeof action !== 'function') return next(action)
 
@@ -81,12 +94,14 @@ export default function butterfly(config = {}) {
       dispatch,
       onSuccess,
       onFailure,
-      enums,
       andThen,
+      { start, success, error },
       rest
     )
 
     // Dispatch proper action based on result of promise from payload
     return payload.then(handleResult(success)).catch(handleResult(error))
   }
+
+  return mw
 }

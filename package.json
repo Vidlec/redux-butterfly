@@ -5,8 +5,8 @@
   "main": "./dist/index.js",
   "scripts": {
     "test": "npx jest",
-    "dev": "npx parcel ./src/index.js",
-    "build": "npx parcel build ./src/index.js"
+    "dev": "npx parcel ./src/index.ts",
+    "build": "npx parcel build ./src/index.ts"
   },
   "repository": {
     "type": "git",
@@ -28,14 +28,15 @@
   },
   "homepage": "https://github.com/Vidlec/redux-butterfly#readme",
   "devDependencies": {
-    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
-    "@babel/preset-env": "^7.1.0",
-    "babel-core": "^7.0.0-bridge",
-    "babel-jest": "^23.6.0",
+    "@babel/core": "^7.2.2",
+    "@types/lodash-es": "^4.17.1",
+    "@types/redux": "^3.6.0",
     "eslint": "^5.6.1",
-    "jest": "^23.6.0",
     "parcel-bundler": "^1.10.1",
     "redux": "^4.0.1",
-    "redux-mock-store": "^1.5.3"
+    "typescript": "^3.2.4"
+  },
+  "dependencies": {
+    "lodash-es": "^4.17.11"
   }
 }
