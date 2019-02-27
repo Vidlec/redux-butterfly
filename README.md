@@ -107,3 +107,54 @@ export const logIn = (username, password) => ({ api }) => ({
 If you dont pass payload (or you do, but its not a promise), or your action creator doesnt return a function, butterfly simply passes the action into next middleware.
 
 And since you can pass promise to payload, you can use async action as a value of a payload and await complex api calls there, to avoid thunk promise chain hell.
+
+
+
+**Typescript**
+
+```js
+import { ButterflyAction, ButterflyProps, ButterflyResult } from './types'
+
+interface Store {
+  auth: { token: string}
+}
+
+interface User {
+  name: string
+  age: number
+  token?: string
+}
+
+enum ActionTypes {
+  GET_USER = 'GET_USER',
+  GET_USER_SUCCESS = 'GET_USER_SUCCESS'
+}
+
+interface UserActionMeta {
+  token: string
+}
+
+
+const getUser = (id: string) => ({ getState, logger }: ButterflyProps<Store>): ButterflyAction => {
+  const { auth: { token } } = getState()
+  return {
+    type: 'GET_USER',
+    payload: fetch('some_url', { headers: { authorization: token }}).then(res => res.json()),
+    onSuccess: (data: User) => logger(data),
+    token,
+  }
+}
+
+const reducer = (state: Store, action: ButterflyResult<ActionTypes, User, UserActionMeta>) => {
+  switch (action.type) {
+    case ActionTypes.GET_USER_SUCCESS:
+      return {
+        ...action.payload,
+        token: action.rest.token
+      }
+
+    default:
+      return state
+  }
+}
+```

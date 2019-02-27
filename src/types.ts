@@ -37,3 +37,9 @@ export interface ButterflyProps<S> {
   dispatch: Dispatch
   [enhancers: string]: any
 }
+
+export interface ButterflyResult<T, P, R = {}> {
+  type: T,
+  payload?: P
+  rest?: R,
+}
