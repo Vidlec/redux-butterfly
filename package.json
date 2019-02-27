@@ -28,7 +28,6 @@
   },
   "homepage": "https://github.com/Vidlec/redux-butterfly#readme",
   "devDependencies": {
-    "@babel/core": "^7.3.4",
     "@types/redux": "^3.6.0",
     "eslint": "^5.14.1",
     "parcel-bundler": "^1.11.0",
