@@ -1,8 +1,10 @@
-export interface StaticEnhancer {
+import { AnyAction, Dispatch } from 'redux'
+
+export interface StaticEnhancers {
   [key: string]: (...args: any) => any
 }
 
-export interface DynamicEnhancer<S> {
+export interface DynamicEnhancers<S> {
   [key: string]: (store: S) => any
 }
 
@@ -13,11 +15,25 @@ export interface Enums {
 }
 
 export interface Enhancers<S> {
-  statics?: StaticEnhancer[]
-  dynamics?: DynamicEnhancer<S>[]
+  statics?: StaticEnhancers
+  dynamics?: DynamicEnhancers<S>
 }
 
 export interface Config<S> {
   enhancers?: Enhancers<S>
   enums?: Enums
+}
+
+export interface ButterflyAction extends AnyAction {
+  payload?: Promise<any> | any
+  sideActions?: AnyAction[] | ButterflyAction[]
+  onSuccess?: (data: any) => void
+  onFailure?: (data: any) => void
+  andThen?: (data: any) => void
+}
+
+export interface ButterflyProps<S> {
+  getState: () => S
+  dispatch: Dispatch
+  [enhancers: string]: any
 }

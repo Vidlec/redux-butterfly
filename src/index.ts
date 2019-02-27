@@ -1,6 +1,6 @@
-import { Config } from './types'
-import get from 'lodash-es/get'
 import { Dispatch, Middleware, MiddlewareAPI } from 'redux'
+
+import { ButterflyAction, Config } from './types'
 
 enum Types {
   START = 'START',
@@ -34,11 +34,15 @@ const resultHandler = (
   })
 }
 
-export default function butterfly<S>(config: Config<S> = {}) {
-  const statics = get(config, ['enhancers', 'statics']) || {}
-  const dynamics = get(config, ['enhancers', 'dynamics']) || {}
+type ReduxAction<S> = {
+  (props: { dispatch: Dispatch, getState: () => S}): ButterflyAction
+}
 
-  const enums = get(config, ['enums']) || {}
+export default function butterfly<S>(config: Config<S> = {}) {
+  const statics = config && config.enhancers && config.enhancers.statics || {}
+  const dynamics = config && config.enhancers && config.enhancers.dynamics || {}
+
+  const enums = config && config.enums
   const {
     start = Types.START,
     success = Types.SUCCESS,
@@ -47,7 +51,7 @@ export default function butterfly<S>(config: Config<S> = {}) {
 
   const mw: Middleware = ({ dispatch, getState }: MiddlewareAPI) => (
     next: Dispatch
-  ) => action => {
+  ) => (action: ReduxAction<S>) => {
     // If its a normal action, pass it to next mw
     if (typeof action !== 'function') return next(action)
 
@@ -78,7 +82,7 @@ export default function butterfly<S>(config: Config<S> = {}) {
 
     // Side actions
     if (sideActions)
-      Promise.resolve(action.sideActions).then(actions =>
+      Promise.resolve(sideActions).then(actions =>
         actions.forEach(dispatch)
       )
 
