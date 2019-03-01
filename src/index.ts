@@ -35,19 +35,19 @@ const resultHandler = (
 }
 
 type ReduxAction<S> = {
-  (props: { dispatch: Dispatch, getState: () => S}): ButterflyAction
+  (props: { dispatch: Dispatch; getState: () => S }): ButterflyAction
 }
 
 export default function butterfly<S>(config: Config<S> = {}) {
-  const statics = config && config.enhancers && config.enhancers.statics || {}
-  const dynamics = config && config.enhancers && config.enhancers.dynamics || {}
+  const statics = (config && config.enhancers && config.enhancers.statics) || {}
+  const dynamics =
+    (config && config.enhancers && config.enhancers.dynamics) || {}
 
-  const enums = config && config.enums
-  const {
-    start = Types.START,
-    success = Types.SUCCESS,
-    error = Types.ERROR,
-  } = enums
+  const { start, success, error } = (config && config.enums) || {
+    start: Types.START,
+    success: Types.SUCCESS,
+    error: Types.ERROR,
+  }
 
   const mw: Middleware = ({ dispatch, getState }: MiddlewareAPI) => (
     next: Dispatch
@@ -82,9 +82,7 @@ export default function butterfly<S>(config: Config<S> = {}) {
 
     // Side actions
     if (sideActions)
-      Promise.resolve(sideActions).then(actions =>
-        actions.forEach(dispatch)
-      )
+      Promise.resolve(sideActions).then(actions => actions.forEach(dispatch))
 
     // Dispatched regular action, just pass to the next middleware
     if (!payload || !isPromise(payload)) {
