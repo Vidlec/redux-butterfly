@@ -22,12 +22,14 @@ const resultHandler = (
   onSuccess,
   onFailure,
   andThen,
+  pipe,
   enums,
   rest
 ) => status => value => {
   if (onSuccess && status === enums.success) onSuccess(value)
   if (onFailure && status === enums.failure) onFailure(value)
   if (andThen) andThen(value)
+  if (pipe) Promise.resolve(pipe).then(action => dispatch(action))
   dispatch({
     ...getPartialAction(status, type, rest),
     payload: value,
@@ -78,6 +80,7 @@ export default function butterfly<S>(config: Config<S> = {}) {
       sideActions,
       onSuccess,
       onFailure,
+      pipe,
       andThen,
       ...rest
     } = actionResult
@@ -98,6 +101,7 @@ export default function butterfly<S>(config: Config<S> = {}) {
       dispatch,
       onSuccess,
       onFailure,
+      pipe,
       andThen,
       { start, success, error },
       rest

@@ -28,6 +28,7 @@ export interface ButterflyAction extends AnyAction {
   payload?: Promise<any> | any
   sideActions?: AnyAction[] | ButterflyAction[]
   onSuccess?: (data: any) => void
+  pipe?: (data: any) => AnyAction | ButterflyAction
   onFailure?: (data: any) => void
   andThen?: (data: any) => void
 }
