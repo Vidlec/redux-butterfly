@@ -1,6 +1,6 @@
 {
   "name": "redux-butterfly",
-  "version": "0.8.5",
+  "version": "0.8.6",
   "description": "Redux side effects middleware",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -27,7 +27,6 @@
   },
   "homepage": "https://github.com/Vidlec/redux-butterfly#readme",
   "devDependencies": {
-    "@types/redux": "^3.6.0",
     "eslint": "^5.14.1",
     "redux": "^4.0.1",
     "typescript": "^3.3.3333"

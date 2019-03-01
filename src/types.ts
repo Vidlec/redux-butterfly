@@ -39,7 +39,7 @@ export interface ButterflyProps<S> {
 }
 
 export interface ButterflyResult<T, P, R = {}> {
-  type: T,
+  type: T
   payload?: P
-  rest?: R,
+  rest?: R
 }
