@@ -43,11 +43,13 @@ export default function butterfly<S>(config: Config<S> = {}) {
   const dynamics =
     (config && config.enhancers && config.enhancers.dynamics) || {}
 
-  const { start, success, error } = (config && config.enums) || {
-    start: Types.START,
-    success: Types.SUCCESS,
-    error: Types.ERROR,
-  }
+  const enums = (config && config.enums) || {}
+
+  const {
+    start = Types.START,
+    success = Types.SUCCESS,
+    error = Types.ERROR,
+  } = enums
 
   const mw: Middleware = ({ dispatch, getState }: MiddlewareAPI) => (
     next: Dispatch
