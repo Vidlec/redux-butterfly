@@ -21,8 +21,8 @@ const resultHandler = (
   dispatch,
   onSuccess,
   onFailure,
-  andThen,
   pipe,
+  andThen,
   enums,
   rest
 ) => status => value => {
